@@ -3,6 +3,7 @@
     package="com.adtarassov.siren">
 
   <application
+      android:name=".SirenApplication"
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"
       android:label="@string/app_name"
@@ -12,7 +13,6 @@
     <activity
         android:name=".MainActivity"
         android:exported="true"
-        android:label="@string/app_name"
         android:theme="@style/Theme.Siren">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
