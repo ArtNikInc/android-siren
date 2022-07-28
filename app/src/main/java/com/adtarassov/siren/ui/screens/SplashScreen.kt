@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.adtarassov.siren.ui.Screens
+import com.adtarassov.siren.ui.utils.Screens
 import com.adtarassov.siren.ui.theme.SirenTheme
 import kotlinx.coroutines.delay
 
