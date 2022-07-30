@@ -1,4 +1,4 @@
-package com.adtarassov.siren.ui.viewmodel
+package com.adtarassov.siren.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

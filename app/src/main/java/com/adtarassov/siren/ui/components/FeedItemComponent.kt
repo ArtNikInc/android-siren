@@ -13,10 +13,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.adtarassov.siren.ui.models.SirenFeedUiModel
 
 @Composable
 fun FeedItemComponent(
-  model: String
+  model: SirenFeedUiModel
 ) {
   Card(
     modifier = Modifier

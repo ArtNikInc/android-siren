@@ -1,4 +1,4 @@
-package com.adtarassov.siren.navigation
+package com.adtarassov.siren.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
