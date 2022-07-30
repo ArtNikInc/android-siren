@@ -67,8 +67,8 @@ fun FeedList(
   ) {
     LazyColumn(
       modifier = Modifier.fillMaxSize(),
-      contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-      verticalArrangement = Arrangement.spacedBy(4.dp),
+      contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp),
+      verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
       items(feeds) { feedModel ->
         FeedItemComponent(feedModel)

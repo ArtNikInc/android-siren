@@ -21,9 +21,9 @@ fun FeedItemComponent(
 ) {
   Card(
     modifier = Modifier
+      .height(100.dp)
       .fillMaxWidth(),
     elevation = 2.dp,
-    backgroundColor = MaterialTheme.colors.primaryVariant,
     shape = MaterialTheme.shapes.large
   ) {
     Box(modifier = Modifier.height(30.dp))

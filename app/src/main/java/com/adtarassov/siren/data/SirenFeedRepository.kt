@@ -30,7 +30,7 @@ class SirenFeedRepository @Inject constructor(
 
   fun getSirenFeedUiModelsFlowTest(): Flow<List<SirenFeedUiModel>> {
     return flow {
-      delay(5000)
+      delay(1)
       val list = listOf(
         SirenFeedModelsConverter.createTestFeedModel(),
         SirenFeedModelsConverter.createTestFeedModel(),
