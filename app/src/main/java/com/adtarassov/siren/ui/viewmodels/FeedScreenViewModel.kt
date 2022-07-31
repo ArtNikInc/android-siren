@@ -3,22 +3,22 @@ package com.adtarassov.siren.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.adtarassov.siren.data.SirenFeedRepository
+import com.adtarassov.siren.ui.models.SirenFeedUiModel
 import com.adtarassov.siren.ui.screens.FeedScreenState
-import com.adtarassov.siren.ui.screens.FeedScreenState.Loading
+import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnItemExpandClick
 import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnRefresh
+import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnScreenEnter
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import java.lang.Error
 import javax.inject.Inject
 
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
-  private val feedScreenRepository: SirenFeedRepository
+  private val feedScreenRepository: SirenFeedRepository,
 ) : BaseFlowViewModel<FeedScreenState, FeedScreenEvent>() {
 
   private val isRefreshingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -42,9 +42,25 @@ class FeedScreenViewModel @Inject constructor(
     }
   }
 
+  private fun onItemExpandClick(model: SirenFeedUiModel) {
+    val currentState = viewStates().value
+    if (currentState !is FeedScreenState.Success) {
+      return
+    }
+    val newList = currentState.feedList.map {
+      if (it == model) {
+        return@map model.copy(isExpanded = !model.isExpanded)
+      }
+      it
+    }
+    viewState = FeedScreenState.Success(newList)
+  }
+
   override fun obtainEvent(viewEvent: FeedScreenEvent) {
     when (viewEvent) {
       OnRefresh -> onListRefresh()
+      OnScreenEnter -> onListRefresh()
+      is OnItemExpandClick -> onItemExpandClick(viewEvent.model)
     }
   }
 

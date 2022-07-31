@@ -32,7 +32,6 @@ fun BottomBar(navController: NavHostController) {
   if (bottomBarDestination) {
     BottomNavigation(
       backgroundColor = SirenTheme.colors.bgMain,
-      elevation = 12.dp
     ) {
       screens.forEach { screen ->
         AddItem(
@@ -58,7 +57,7 @@ fun RowScope.AddItem(
         text = screen.title
       )
     },
-    selectedContentColor = SirenTheme.colors.tintColor,
+    selectedContentColor = SirenTheme.colors.mainText,
     icon = {
       Icon(
         imageVector = screen.icon,

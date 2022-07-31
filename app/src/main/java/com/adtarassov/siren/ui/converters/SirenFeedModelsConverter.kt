@@ -7,6 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
 @Singleton
 class SirenFeedModelsConverter @Inject constructor(
@@ -17,6 +18,7 @@ class SirenFeedModelsConverter @Inject constructor(
   suspend fun convertFeedModel(sirenFeedModels: SirenFeedModel): SirenFeedUiModel {
     delay(5)
     return SirenFeedUiModel(
+      id = sirenFeedModels.id,
       header = sirenFeedModels.header,
       body = sirenFeedModels.body,
       authorImage = null
@@ -24,13 +26,14 @@ class SirenFeedModelsConverter @Inject constructor(
   }
 
   companion object {
+    private val random = Random(1)
     fun createTestFeedModel(): SirenFeedModel =
       SirenFeedModel(
+        id = random.nextLong(),
         header = "header",
         body = "body",
         authorId = 123,
         authorImageUrl = null
-
       )
   }
 
