@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
+import com.adtarassov.siren.ui.theme.SirenTheme
 
 @Composable
 fun FeedItemComponent(
@@ -24,7 +25,7 @@ fun FeedItemComponent(
       .height(100.dp)
       .fillMaxWidth(),
     elevation = 2.dp,
-    shape = MaterialTheme.shapes.large
+    shape = SirenTheme.shapes.medium
   ) {
     Box(modifier = Modifier.height(30.dp))
   }

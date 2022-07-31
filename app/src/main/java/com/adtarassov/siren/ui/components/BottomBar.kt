@@ -9,11 +9,13 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.adtarassov.siren.ui.theme.SirenTheme
 import com.adtarassov.siren.ui.utils.BottomBarScreen
 
 @Composable
@@ -28,7 +30,10 @@ fun BottomBar(navController: NavHostController) {
 
   val bottomBarDestination = screens.any { it.route == currentDestination?.route }
   if (bottomBarDestination) {
-    BottomNavigation {
+    BottomNavigation(
+      backgroundColor = SirenTheme.colors.bgMain,
+      elevation = 12.dp
+    ) {
       screens.forEach { screen ->
         AddItem(
           screen = screen,
@@ -48,8 +53,12 @@ fun RowScope.AddItem(
 ) {
   BottomNavigationItem(
     label = {
-      Text(text = screen.title)
+      Text(
+        color = SirenTheme.colors.mainText,
+        text = screen.title
+      )
     },
+    selectedContentColor = SirenTheme.colors.tintColor,
     icon = {
       Icon(
         imageVector = screen.icon,
