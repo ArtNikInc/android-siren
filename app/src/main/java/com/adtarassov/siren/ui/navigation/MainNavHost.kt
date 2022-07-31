@@ -2,12 +2,14 @@ package com.adtarassov.siren.ui.navigation
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.adtarassov.siren.ui.screens.FeedScreen
 import com.adtarassov.siren.ui.utils.BottomBarScreen
 import com.adtarassov.siren.ui.utils.Screens.MAIN_SCREEN
+import com.adtarassov.siren.ui.viewmodels.FeedScreenViewModel
 
 @Composable
 fun MainNavHost(navController: NavHostController) {
@@ -17,7 +19,8 @@ fun MainNavHost(navController: NavHostController) {
     startDestination = BottomBarScreen.Feed.route
   ) {
     composable(route = BottomBarScreen.Feed.route) {
-      FeedScreen()
+      val viewModel: FeedScreenViewModel = hiltViewModel()
+      FeedScreen(viewModel = viewModel)
     }
     composable(route = BottomBarScreen.Profile.route) {
       Text(text = "title2")

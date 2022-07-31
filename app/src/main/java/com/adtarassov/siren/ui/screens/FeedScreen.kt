@@ -25,7 +25,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun FeedScreen(
-  viewModel: FeedScreenViewModel = hiltViewModel(),
+  viewModel: FeedScreenViewModel,
 ) {
   val viewState = viewModel.viewStates().collectAsState()
   val refreshingState by viewModel.isRefreshing().collectAsState()
@@ -51,7 +51,8 @@ fun FeedScreen(
       viewModel.obtainEvent(FeedScreenEvent.OnRefresh)
     }
   }
-  LaunchedEffect(key1 = viewState, block = {
+  LaunchedEffect(key1 = Unit, block = {
+    viewModel.obtainEvent(FeedScreenEvent.OnScreenEnter)
   })
 }
 
