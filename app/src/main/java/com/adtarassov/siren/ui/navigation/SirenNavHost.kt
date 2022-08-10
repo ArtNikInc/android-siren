@@ -6,8 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.adtarassov.siren.ui.utils.Screens.MAIN_SCREEN
 import com.adtarassov.siren.ui.utils.Screens.SPLASH_SCREEN
-import com.adtarassov.siren.ui.screens.MainScreen
-import com.adtarassov.siren.ui.screens.SplashScreen
+import com.adtarassov.siren.ui.screens.base.MainScreen
+import com.adtarassov.siren.ui.screens.base.SplashScreen
 import com.adtarassov.siren.ui.utils.Screens.ROOT
 
 sealed class SirenNavRoute(val route: String) {

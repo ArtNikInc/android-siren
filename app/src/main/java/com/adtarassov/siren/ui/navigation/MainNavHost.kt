@@ -7,10 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.adtarassov.siren.ui.screens.FeedScreen
+import com.adtarassov.siren.ui.screens.feed.FeedScreen
 import com.adtarassov.siren.ui.utils.BottomBarScreen
 import com.adtarassov.siren.ui.utils.Screens.MAIN_SCREEN
-import com.adtarassov.siren.ui.screens.FeedScreenViewModel
+import com.adtarassov.siren.ui.screens.feed.FeedScreenViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

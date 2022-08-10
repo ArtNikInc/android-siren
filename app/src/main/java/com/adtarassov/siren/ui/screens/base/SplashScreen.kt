@@ -1,4 +1,4 @@
-package com.adtarassov.siren.ui.screens
+package com.adtarassov.siren.ui.screens.base
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

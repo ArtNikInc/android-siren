@@ -1,4 +1,4 @@
-package com.adtarassov.siren.ui.screens
+package com.adtarassov.siren.ui.screens.feed
 
 import android.content.Context
 import android.util.Log
@@ -7,10 +7,12 @@ import com.adtarassov.siren.R
 import com.adtarassov.siren.data.storage.SirenFeedRepository
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
 import com.adtarassov.siren.ui.models.TopBarModel
-import com.adtarassov.siren.ui.screens.FeedScreenEvent.OnItemExpandClick
-import com.adtarassov.siren.ui.screens.FeedScreenEvent.OnRefresh
-import com.adtarassov.siren.ui.screens.FeedScreenEvent.OnScreenEnter
+import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnItemExpandClick
+import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnRefresh
+import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnScreenEnter
 import com.adtarassov.siren.ui.BaseFlowViewModel
+import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Error
+import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +41,7 @@ class FeedScreenViewModel @Inject constructor(
   fun topBarFlow(): StateFlow<TopBarModel> = topBarFlow
 
   private fun onScreenEnter() {
-    if (viewStates().value is FeedScreenState.Success) {
+    if (viewStates().value is Success) {
       return
     }
     onListRefresh()
@@ -52,12 +54,12 @@ class FeedScreenViewModel @Inject constructor(
           isRefreshingFlow.emit(true)
         }
         .catch { exception ->
-          viewState = FeedScreenState.Error
+          viewState = Error
           isRefreshingFlow.emit(false)
           Log.e(this@FeedScreenViewModel::class.simpleName, exception.stackTrace.toString())
         }
         .collect { feedModels ->
-          viewState = FeedScreenState.Success(feedModels)
+          viewState = Success(feedModels)
           isRefreshingFlow.emit(false)
         }
     }
@@ -65,7 +67,7 @@ class FeedScreenViewModel @Inject constructor(
 
   private fun onItemExpandClick(model: SirenFeedUiModel) {
     val currentState = viewStates().value
-    if (currentState !is FeedScreenState.Success) {
+    if (currentState !is Success) {
       return
     }
     val newList = currentState.feedList.map {
@@ -74,7 +76,7 @@ class FeedScreenViewModel @Inject constructor(
       }
       it
     }
-    viewState = FeedScreenState.Success(newList)
+    viewState = Success(newList)
   }
 
   override fun obtainEvent(viewEvent: FeedScreenEvent) {

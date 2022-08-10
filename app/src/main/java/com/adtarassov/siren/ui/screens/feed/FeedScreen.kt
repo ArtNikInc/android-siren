@@ -1,4 +1,4 @@
-package com.adtarassov.siren.ui.screens
+package com.adtarassov.siren.ui.screens.feed
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -12,9 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.adtarassov.siren.ui.components.FeedList
 import com.adtarassov.siren.ui.components.TopBar
-import com.adtarassov.siren.ui.screens.FeedScreenState.Error
-import com.adtarassov.siren.ui.screens.FeedScreenState.Loading
-import com.adtarassov.siren.ui.screens.FeedScreenState.Success
+import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnItemExpandClick
+import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnRefresh
+import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnScreenEnter
+import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Error
+import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Loading
+import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Success
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
@@ -44,19 +47,19 @@ fun FeedScreen(
         is Success -> FeedList(
           refreshState = isRefreshing,
           feeds = state.feedList,
-          onExpandClick = { viewModel.obtainEvent(FeedScreenEvent.OnItemExpandClick(it)) },
-          onRefresh = { viewModel.obtainEvent(FeedScreenEvent.OnRefresh) }
+          onExpandClick = { viewModel.obtainEvent(OnItemExpandClick(it)) },
+          onRefresh = { viewModel.obtainEvent(OnRefresh) }
         )
         null -> FeedList(
           refreshState = isRefreshing,
           feeds = emptyList(),
-          onExpandClick = { viewModel.obtainEvent(FeedScreenEvent.OnItemExpandClick(it)) },
-          onRefresh = { viewModel.obtainEvent(FeedScreenEvent.OnRefresh) }
+          onExpandClick = { viewModel.obtainEvent(OnItemExpandClick(it)) },
+          onRefresh = { viewModel.obtainEvent(OnRefresh) }
         )
       }
     }
   }
   LaunchedEffect(key1 = Unit, block = {
-    viewModel.obtainEvent(FeedScreenEvent.OnScreenEnter)
+    viewModel.obtainEvent(OnScreenEnter)
   })
 }

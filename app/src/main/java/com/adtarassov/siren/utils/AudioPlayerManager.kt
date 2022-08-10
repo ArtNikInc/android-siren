@@ -13,9 +13,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Deprecated("to be continued")
-//@Singleton
-class AudioPlayerManager constructor(
-  //@Inject
+@Singleton
+class AudioPlayerManager @Inject constructor(
   @ApplicationContext
   private val context: Context,
   @ApplicationScope

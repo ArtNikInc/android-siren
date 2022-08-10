@@ -4,6 +4,6 @@ import androidx.lifecycle.LifecycleService
 import dagger.hilt.android.AndroidEntryPoint
 
 @Deprecated("to be continued")
-//@AndroidEntryPoint
+@AndroidEntryPoint
 class AudioPlayerService : LifecycleService() {
 }

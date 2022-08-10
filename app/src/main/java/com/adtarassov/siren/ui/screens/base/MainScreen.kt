@@ -1,4 +1,4 @@
-package com.adtarassov.siren.ui.screens
+package com.adtarassov.siren.ui.screens.base
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
