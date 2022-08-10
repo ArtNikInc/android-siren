@@ -12,5 +12,7 @@ data class SirenFeedModel(
   @SerializedName("author_id")
   val authorId: Long,
   @SerializedName("author_image_url")
-  val authorImageUrl: String?
+  val authorImageUrl: String?,
+  @SerializedName("author_name")
+  val authorName: String,
 )

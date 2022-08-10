@@ -9,7 +9,7 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -48,13 +48,13 @@ fun BottomBar(navController: NavHostController) {
 fun RowScope.AddItem(
   screen: BottomBarScreen,
   currentDestination: NavDestination?,
-  navController: NavHostController
+  navController: NavHostController,
 ) {
   BottomNavigationItem(
     label = {
       Text(
         color = SirenTheme.colors.mainText,
-        text = screen.title
+        text = stringResource(screen.titleId)
       )
     },
     selectedContentColor = SirenTheme.colors.mainText,

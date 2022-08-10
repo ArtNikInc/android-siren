@@ -28,27 +28,27 @@ fun SirenTheme(
   val typography = SirenTypography(
     heading = TextStyle(
       fontSize = when (textSize) {
-        Small -> 24.sp
-        Medium -> 28.sp
+        Small -> 12.sp
+        Medium -> 18.sp
         Big -> 32.sp
       },
-      fontWeight = FontWeight.Bold
+      fontWeight = FontWeight.Normal
     ),
     body = TextStyle(
       fontSize = when (textSize) {
-        Small -> 14.sp
-        Medium -> 16.sp
+        Small -> 10.sp
+        Medium -> 14.sp
         Big -> 18.sp
       },
-      fontWeight = FontWeight.Normal
+      fontWeight = FontWeight.Normal,
     ),
     toolbar = TextStyle(
       fontSize = when (textSize) {
         Small -> 14.sp
-        Medium -> 16.sp
-        Big -> 18.sp
+        Medium -> 18.sp
+        Big -> 20.sp
       },
-      fontWeight = FontWeight.Medium
+      fontWeight = FontWeight.Normal
     ),
     caption = TextStyle(
       fontSize = when (textSize) {

@@ -1,14 +1,19 @@
 package com.adtarassov.siren.ui.viewmodels
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.adtarassov.siren.R
 import com.adtarassov.siren.data.SirenFeedRepository
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
+import com.adtarassov.siren.ui.models.TopBarModel
 import com.adtarassov.siren.ui.screens.FeedScreenState
 import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnItemExpandClick
 import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnRefresh
 import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnScreenEnter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -19,10 +24,27 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
   private val feedScreenRepository: SirenFeedRepository,
+  @ApplicationContext
+  context: Context,
 ) : BaseFlowViewModel<FeedScreenState, FeedScreenEvent>() {
 
   private val isRefreshingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
   fun isRefreshing(): StateFlow<Boolean> = isRefreshingFlow
+
+  private val topBarFlow: MutableStateFlow<TopBarModel> = MutableStateFlow(
+    TopBarModel(
+      title = context.getString(R.string.tool_bar_feed_screen_title)
+    )
+  )
+
+  fun topBarFlow(): StateFlow<TopBarModel> = topBarFlow
+
+  private fun onScreenEnter() {
+    if (viewStates().value is FeedScreenState.Success) {
+      return
+    }
+    onListRefresh()
+  }
 
   private fun onListRefresh() {
     viewModelScope.launch {
@@ -59,7 +81,7 @@ class FeedScreenViewModel @Inject constructor(
   override fun obtainEvent(viewEvent: FeedScreenEvent) {
     when (viewEvent) {
       OnRefresh -> onListRefresh()
-      OnScreenEnter -> onListRefresh()
+      OnScreenEnter -> onScreenEnter()
       is OnItemExpandClick -> onItemExpandClick(viewEvent.model)
     }
   }

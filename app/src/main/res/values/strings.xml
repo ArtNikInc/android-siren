@@ -1,3 +1,7 @@
 <resources>
   <string name="app_name">Siren</string>
+  <string name="tool_bar_feed_screen_title">Feed</string>
+  <string name="bottom_bar_feed_screen_title">Feed</string>
+  <string name="bottom_bar_siren_screen_title">Siren</string>
+  <string name="bottom_bar_profile_screen_title">Profile</string>
 </resources>

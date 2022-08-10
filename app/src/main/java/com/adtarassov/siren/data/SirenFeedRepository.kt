@@ -1,10 +1,8 @@
 package com.adtarassov.siren.data
 
-import android.content.Context
 import com.adtarassov.siren.data.api.SirenApi
 import com.adtarassov.siren.ui.converters.SirenFeedModelsConverter
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +20,7 @@ class SirenFeedRepository @Inject constructor(
   fun getSirenFeedUiModelsFlow(): Flow<List<SirenFeedUiModel>> {
     return flow {
       val fooList = sirenApi.getFeed().map { model ->
-        sirenFeedModelsConverter.convertFeedModel(model)
+        sirenFeedModelsConverter.convertToFeedModel(model)
       }
       emit(fooList)
     }.flowOn(Dispatchers.IO)
@@ -30,14 +28,14 @@ class SirenFeedRepository @Inject constructor(
 
   fun getSirenFeedUiModelsFlowTest(): Flow<List<SirenFeedUiModel>> {
     return flow {
-      delay(1)
+      delay(100)
       val list = listOf(
         SirenFeedModelsConverter.createTestFeedModel(),
         SirenFeedModelsConverter.createTestFeedModel(),
-        SirenFeedModelsConverter.createTestFeedModel(),
+        SirenFeedModelsConverter.createLongTestFeedModel(),
         SirenFeedModelsConverter.createTestFeedModel(),
       ).map { model ->
-        sirenFeedModelsConverter.convertFeedModel(model)
+        sirenFeedModelsConverter.convertToFeedModel(model)
       }
       emit(list)
     }.flowOn(Dispatchers.IO)
