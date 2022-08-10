@@ -12,13 +12,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
-//fixme to be continued
-@Singleton
-class AudioPlayerManager @Inject constructor(
+@Deprecated("to be continued")
+//@Singleton
+class AudioPlayerManager constructor(
+  //@Inject
   @ApplicationContext
   private val context: Context,
   @ApplicationScope
-  private val externalScope: CoroutineScope
+  private val externalScope: CoroutineScope,
 ) {
   private val audioService: MutableStateFlow<Any?> = MutableStateFlow(null)
   fun audioServiceValue() = audioService.value
