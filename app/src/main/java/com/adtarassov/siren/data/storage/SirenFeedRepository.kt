@@ -1,4 +1,4 @@
-package com.adtarassov.siren.data
+package com.adtarassov.siren.data.storage
 
 import com.adtarassov.siren.data.api.SirenApi
 import com.adtarassov.siren.ui.converters.SirenFeedModelsConverter

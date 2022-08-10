@@ -1,4 +1,4 @@
-package com.adtarassov.siren.data
+package com.adtarassov.siren.data.storage
 
 import android.content.Context
 import androidx.preference.PreferenceManager

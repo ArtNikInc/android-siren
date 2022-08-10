@@ -1,11 +1,10 @@
 package com.adtarassov.siren.ui.viewmodels
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.adtarassov.siren.R
-import com.adtarassov.siren.data.SirenFeedRepository
+import com.adtarassov.siren.data.storage.SirenFeedRepository
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
 import com.adtarassov.siren.ui.models.TopBarModel
 import com.adtarassov.siren.ui.screens.FeedScreenState
