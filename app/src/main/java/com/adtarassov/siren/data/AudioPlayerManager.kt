@@ -1,4 +1,4 @@
-package com.adtarassov.siren.utils
+package com.adtarassov.siren.data
 
 import android.content.ComponentName
 import android.content.Context
