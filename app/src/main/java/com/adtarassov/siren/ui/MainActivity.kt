@@ -1,4 +1,4 @@
-package com.adtarassov.siren
+package com.adtarassov.siren.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
