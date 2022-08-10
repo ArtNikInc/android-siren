@@ -22,8 +22,8 @@ import com.adtarassov.siren.ui.utils.BottomBarScreen
 fun BottomBar(navController: NavHostController) {
   val screens = listOf(
     BottomBarScreen.Feed,
-    BottomBarScreen.Profile,
     BottomBarScreen.Settings,
+    BottomBarScreen.Profile,
   )
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination

@@ -23,13 +23,13 @@ sealed class BottomBarScreen(
     icon = Icons.Default.List
   )
 
-  object Profile : BottomBarScreen(
+  object Settings : BottomBarScreen(
     route = SIREN_SCREEN,
     titleId = R.string.bottom_bar_siren_screen_title,
     icon = Icons.Default.Share
   )
 
-  object Settings : BottomBarScreen(
+  object Profile : BottomBarScreen(
     route = PROFILE_SCREEN,
     titleId = R.string.bottom_bar_profile_screen_title,
     icon = Icons.Default.Person

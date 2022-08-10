@@ -3,6 +3,7 @@ package com.adtarassov.siren.ui.navigation
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,6 +12,8 @@ import com.adtarassov.siren.ui.screens.feed.FeedScreen
 import com.adtarassov.siren.ui.utils.BottomBarScreen
 import com.adtarassov.siren.ui.utils.Screens.MAIN_SCREEN
 import com.adtarassov.siren.ui.screens.feed.FeedScreenViewModel
+import com.adtarassov.siren.ui.screens.profile.ProfileScreen
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -20,15 +23,22 @@ fun MainNavHost(navController: NavHostController) {
     route = MAIN_SCREEN,
     startDestination = BottomBarScreen.Feed.route
   ) {
-    composable(route = BottomBarScreen.Feed.route) {
-      val viewModel: FeedScreenViewModel = hiltViewModel()
+    composable(route = BottomBarScreen.Feed.route) { backStackEntry ->
+      val parentEntry = remember(backStackEntry) {
+        navController.getBackStackEntry(MAIN_SCREEN)
+      }
+      val viewModel: FeedScreenViewModel = hiltViewModel(parentEntry)
       FeedScreen(navController = navController, viewModel = viewModel)
     }
-    composable(route = BottomBarScreen.Profile.route) {
+    composable(route = BottomBarScreen.Settings.route) {
       Text(text = "title2")
     }
-    composable(route = BottomBarScreen.Settings.route) {
-      Text(text = "title3")
+    composable(route = BottomBarScreen.Profile.route) { backStackEntry ->
+      val parentEntry = remember(backStackEntry) {
+        navController.getBackStackEntry(MAIN_SCREEN)
+      }
+      val viewModel: ProfileScreenViewModel = hiltViewModel(parentEntry)
+      ProfileScreen(navController = navController, viewModel = viewModel)
     }
   }
 }

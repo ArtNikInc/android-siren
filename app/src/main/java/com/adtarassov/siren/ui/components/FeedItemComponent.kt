@@ -4,7 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -61,26 +63,24 @@ fun FeedItemComponent(
           overflow = TextOverflow.Ellipsis
         )
       }
-      Column(
-        modifier = Modifier
-          .padding(top = 2.dp)
-          .fillMaxWidth()
-      ) {
-        Text(
-          text = model.header,
-          style = typography.heading,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis
-        )
-        Text(
-          text = model.body,
-          style = typography.body,
-          color = SirenTheme.colors.minorText,
-          modifier = Modifier.padding(top = 2.dp),
-          maxLines = 2,
-          overflow = TextOverflow.Ellipsis
-        )
-      }
+
+      Spacer(modifier = Modifier.height(2.dp))
+
+      Text(
+        text = model.header,
+        style = typography.heading,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+      )
+
+      Text(
+        text = model.body,
+        style = typography.body,
+        color = SirenTheme.colors.minorText,
+        modifier = Modifier.padding(top = 2.dp),
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
+      )
     }
   }
 }

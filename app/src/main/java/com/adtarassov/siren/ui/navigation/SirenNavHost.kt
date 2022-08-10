@@ -17,16 +17,17 @@ sealed class SirenNavRoute(val route: String) {
 
 @Composable
 fun SirenNavHost(navController: NavHostController) {
-  NavHost(
-    navController = navController,
-    route = ROOT,
-    startDestination = SirenNavRoute.Main.route
-  ) {
-     composable(SirenNavRoute.Splash.route) {
-      SplashScreen(navController = navController)
-    }
-    composable(SirenNavRoute.Main.route) {
-      MainScreen()
-    }
-  }
+  MainScreen()
+//  NavHost(
+//    navController = navController,
+//    route = ROOT,
+//    startDestination = SirenNavRoute.Main.route
+//  ) {
+//     composable(SirenNavRoute.Splash.route) {
+//      SplashScreen(navController = navController)
+//    }
+//    composable(SirenNavRoute.Main.route) {
+//
+//    }
+//  }
 }
