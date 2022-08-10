@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
+//fixme to be continued
 @Singleton
 class AudioPlayerManager @Inject constructor(
   @ApplicationContext
