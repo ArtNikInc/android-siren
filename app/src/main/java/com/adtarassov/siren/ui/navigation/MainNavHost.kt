@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import com.adtarassov.siren.ui.screens.FeedScreen
 import com.adtarassov.siren.ui.utils.BottomBarScreen
 import com.adtarassov.siren.ui.utils.Screens.MAIN_SCREEN
-import com.adtarassov.siren.ui.viewmodels.FeedScreenViewModel
+import com.adtarassov.siren.ui.screens.FeedScreenViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

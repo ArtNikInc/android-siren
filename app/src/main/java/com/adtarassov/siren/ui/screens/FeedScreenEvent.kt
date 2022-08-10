@@ -1,4 +1,4 @@
-package com.adtarassov.siren.ui.viewmodels
+package com.adtarassov.siren.ui.screens
 
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
 

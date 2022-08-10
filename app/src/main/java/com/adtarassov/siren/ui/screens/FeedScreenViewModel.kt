@@ -1,4 +1,4 @@
-package com.adtarassov.siren.ui.viewmodels
+package com.adtarassov.siren.ui.screens
 
 import android.content.Context
 import android.util.Log
@@ -7,10 +7,10 @@ import com.adtarassov.siren.R
 import com.adtarassov.siren.data.storage.SirenFeedRepository
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
 import com.adtarassov.siren.ui.models.TopBarModel
-import com.adtarassov.siren.ui.screens.FeedScreenState
-import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnItemExpandClick
-import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnRefresh
-import com.adtarassov.siren.ui.viewmodels.FeedScreenEvent.OnScreenEnter
+import com.adtarassov.siren.ui.screens.FeedScreenEvent.OnItemExpandClick
+import com.adtarassov.siren.ui.screens.FeedScreenEvent.OnRefresh
+import com.adtarassov.siren.ui.screens.FeedScreenEvent.OnScreenEnter
+import com.adtarassov.siren.ui.BaseFlowViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
