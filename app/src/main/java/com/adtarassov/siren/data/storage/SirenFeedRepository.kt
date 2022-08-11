@@ -19,7 +19,7 @@ class SirenFeedRepository @Inject constructor(
 
   fun getSirenFeedUiModelsFlow(): Flow<List<SirenFeedUiModel>> {
     return flow {
-      val fooList = sirenApi.getFeed().map { model ->
+      val fooList = sirenApi.getRecommendationFeed().map { model ->
         sirenFeedModelsConverter.convertToFeedModel(model)
       }
       emit(fooList)
@@ -34,7 +34,10 @@ class SirenFeedRepository @Inject constructor(
         SirenFeedModelsConverter.createTestFeedModel(),
         SirenFeedModelsConverter.createLongTestFeedModel(),
         SirenFeedModelsConverter.createTestFeedModel(),
-      ).map { model ->
+        SirenFeedModelsConverter.createLongTestFeedModel(),
+        SirenFeedModelsConverter.createLongTestFeedModel(),
+        SirenFeedModelsConverter.createLongTestFeedModel(),
+        ).map { model ->
         sirenFeedModelsConverter.convertToFeedModel(model)
       }
       emit(list)

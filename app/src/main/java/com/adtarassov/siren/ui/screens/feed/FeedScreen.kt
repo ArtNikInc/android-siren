@@ -18,6 +18,7 @@ import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnScreenEnter
 import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Error
 import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Loading
 import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Success
+import com.adtarassov.siren.ui.theme.SirenTheme
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
@@ -34,7 +35,8 @@ fun FeedScreen(
   Scaffold(
     topBar = {
       TopBar(navController = navController, topBarModel = topBarModel)
-    }
+    },
+    backgroundColor = SirenTheme.colors.bgMinor
   ) { innerPadding ->
     Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())) {
       when (val state = viewState.value) {

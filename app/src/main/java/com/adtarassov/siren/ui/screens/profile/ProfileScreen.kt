@@ -1,6 +1,5 @@
 package com.adtarassov.siren.ui.screens.profile
 
-import android.provider.ContactsContract.Profile
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,15 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -33,9 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.adtarassov.siren.ui.components.FeedList
 import com.adtarassov.siren.ui.components.TopBar
-import com.adtarassov.siren.ui.models.UserUiModel
-import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Error
-import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Loading
+import com.adtarassov.siren.ui.models.ProfileUiModel
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnItemExpandClick
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnRefresh
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnScreenEnter
@@ -59,8 +53,18 @@ fun ProfileScreen(
 
   Scaffold(
     topBar = {
-      TopBar(navController = navController, topBarModel = topBarModel)
-    }
+      Column {
+        TopBar(navController = navController, topBarModel = topBarModel)
+        if (!topBarModel.hasElevation) {
+          Spacer(
+            modifier = Modifier
+              .height(1.dp)
+              .background(SirenTheme.colors.bgMinor)
+          )
+        }
+      }
+    },
+    backgroundColor = SirenTheme.colors.bgMinor
   ) { innerPadding ->
     Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())) {
       when (val state = viewState.value) {
@@ -72,13 +76,14 @@ fun ProfileScreen(
         }
         is Success -> {
           Column {
-            ProfileHeader(state.userModel)
             FeedList(
               refreshState = isRefreshing,
               feeds = state.feedList,
               onExpandClick = { viewModel.obtainEvent(OnItemExpandClick(it)) },
               onRefresh = { viewModel.obtainEvent(OnRefresh) }
-            )
+            ) {
+              ProfileHeader(state.profileModel)
+            }
           }
         }
         null -> {
@@ -99,12 +104,12 @@ fun ProfileScreen(
 
 @Composable
 fun ProfileHeader(
-  model: UserUiModel,
+  model: ProfileUiModel,
 ) {
   Card(
     backgroundColor = SirenTheme.colors.bgMain,
-    elevation = 4.dp,
-    shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp),
+    elevation = 8.dp,
+    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
     modifier = Modifier
       .fillMaxWidth()
   ) {
@@ -117,10 +122,10 @@ fun ProfileHeader(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
       ) {
-        model.userImage?.let { drawable ->
+        model.profileIcon?.let { drawable ->
           Image(
             painter = rememberDrawablePainter(drawable = drawable),
-            contentDescription = model.userName,
+            contentDescription = model.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
               .padding(end = 4.dp)
@@ -130,7 +135,7 @@ fun ProfileHeader(
           )
         }
         Text(
-          text = "User",
+          text = model.name,
           style = SirenTheme.typography.heading,
           maxLines = 1,
           overflow = TextOverflow.Ellipsis
@@ -140,7 +145,7 @@ fun ProfileHeader(
       Spacer(modifier = Modifier.height(2.dp))
 
       Text(
-        text = model.userDescription,
+        text = model.description,
         style = SirenTheme.typography.body,
         maxLines = 3,
         overflow = TextOverflow.Ellipsis

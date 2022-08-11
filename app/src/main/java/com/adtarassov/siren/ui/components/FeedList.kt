@@ -6,8 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -24,19 +25,30 @@ fun FeedList(
   feeds: List<SirenFeedUiModel>,
   onRefresh: () -> Unit,
   onExpandClick: (SirenFeedUiModel) -> Unit,
+  header: (@Composable () -> Unit)? = null,
 ) {
+  val hasHeader = header != null
   SwipeRefresh(
-    modifier = Modifier.background(SirenTheme.colors.bgMinor),
     state = refreshState,
     onRefresh = onRefresh,
   ) {
     LazyColumn(
       modifier = Modifier.fillMaxSize(),
-      contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp),
-      verticalArrangement = Arrangement.spacedBy(18.dp),
+      contentPadding = PaddingValues(bottom = 16.dp),
+      verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-      items(feeds, key = { it.id }) { feedModel ->
-        Row(Modifier.animateItemPlacement()) {
+      header?.let {
+        item {
+          header.invoke()
+        }
+      }
+      itemsIndexed(feeds, key = { _, feedModel -> feedModel.id }) { i, feedModel ->
+        val isFirst = i == 0
+        Row(
+          Modifier
+            .animateItemPlacement()
+            .padding(start = 16.dp, end = 16.dp, top = if (!hasHeader && isFirst) 16.dp else 0.dp)
+        ) {
           FeedItemComponent(feedModel)
 //          FeedAnimatedItemComponent(feedModel) {
 //            onExpandClick(it)
