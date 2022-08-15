@@ -18,6 +18,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -59,7 +60,7 @@ class FeedScreenViewModel @Inject constructor(
           isRefreshingFlow.emit(false)
           Log.e(this@FeedScreenViewModel::class.simpleName, exception.stackTrace.toString())
         }
-        .collect { feedModels ->
+        .collectLatest { feedModels ->
           viewState = Success(feedModels)
           isRefreshingFlow.emit(false)
         }

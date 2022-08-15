@@ -19,15 +19,19 @@ class SirenProfileRepository @Inject constructor(
   private val profileModelsConverter: SirenProfileModelsConverter,
 ) {
 
-  fun getProfileUiModelsFlow(profileName: String): Flow<ProfileUiModel> {
+  fun getProfileUiModelsFlow(profileName: String, token: String?): Flow<ProfileUiModel> {
     return flow {
-      val profileModel = sirenApi.getProfile(profileName)
+      val profileModel = if (token.isNullOrBlank()) {
+        sirenApi.getProfile(profileName = profileName)
+      } else {
+        sirenApi.getProfile(token = token, profileName = profileName)
+      }
       val profileModelUiModel = profileModelsConverter.convertToProfileUiModel(profileModel)
       emit(profileModelUiModel)
     }.flowOn(Dispatchers.IO)
   }
 
-  fun getProfileUiModelsFlowTest(): Flow<ProfileUiModel> {
+  fun getProfileUiModelsFlowTest(profileName: String, token: String?): Flow<ProfileUiModel> {
     return flow {
       delay(100)
       val profileModel = SirenProfileModelsConverter.createLongTestProfileModel()

@@ -6,21 +6,28 @@ import androidx.lifecycle.viewModelScope
 import com.adtarassov.siren.R
 import com.adtarassov.siren.data.storage.SirenFeedRepository
 import com.adtarassov.siren.data.storage.SirenProfileRepository
+import com.adtarassov.siren.data.storage.SirenUserRepository
+import com.adtarassov.siren.data.storage.UserPreferences
 import com.adtarassov.siren.ui.BaseFlowViewModel
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
 import com.adtarassov.siren.ui.models.TopBarUiModel
 import com.adtarassov.siren.ui.models.ProfileUiModel
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnAuthorizeButtonClick
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnItemExpandClick
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnLogout
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnRefresh
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnRegistrationButtonClick
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnScreenEnter
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenState.Success
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Main
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Other
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,9 +36,16 @@ import javax.inject.Inject
 class ProfileScreenViewModel @Inject constructor(
   private val profileRepository: SirenProfileRepository,
   private val feedRepository: SirenFeedRepository,
+  private val userPreferences: UserPreferences,
+  private val userRepository: SirenUserRepository,
   @ApplicationContext
   context: Context,
 ) : BaseFlowViewModel<ProfileScreenState, ProfileScreenEvent>() {
+
+  private val registrationErrorString = context.getString(R.string.registration_response_error)
+  private val authErrorString = context.getString(R.string.auth_response_error)
+
+  private lateinit var profileScreenType: ProfileScreenType // must be create in OnScreenEnter event
 
   private val isRefreshingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
   fun isRefreshing(): StateFlow<Boolean> = isRefreshingFlow
@@ -45,18 +59,11 @@ class ProfileScreenViewModel @Inject constructor(
 
   fun topBarFlow(): StateFlow<TopBarUiModel> = topBarFlow
 
-  private fun onScreenEnter() {
-    if (viewStates().value is Success) {
-      return
-    }
-    onListRefresh()
-  }
-
-  private fun onListRefresh() {
+  private fun profileInformationRefresh(profileName: String, token: String?) {
     viewModelScope.launch {
       combine(
-        profileRepository.getProfileUiModelsFlowTest(),
-        feedRepository.getSirenFeedUiModelsFlowTest()
+        profileRepository.getProfileUiModelsFlowTest(profileName, token),
+        feedRepository.getSirenProfileFeedUiModelsTestFlow(profileName, token)
       ) { profileUiModel: ProfileUiModel, feedList: List<SirenFeedUiModel> ->
         profileUiModel to feedList
       }
@@ -68,13 +75,31 @@ class ProfileScreenViewModel @Inject constructor(
           isRefreshingFlow.emit(false)
           Log.e(this@ProfileScreenViewModel::class.simpleName, exception.stackTrace.toString())
         }
-        .collect { pair ->
+        .collectLatest { pair ->
           val profileUiModel = pair.first
           val feedList = pair.second
           viewState = Success(profileUiModel, feedList)
           isRefreshingFlow.emit(false)
         }
     }
+  }
+
+  private fun doOnOtherProfileScreen(profileName: String) {
+    val userAuthModel = userPreferences.userAuthModelFlow().value
+    profileInformationRefresh(profileName, userAuthModel.token)
+  }
+
+  private fun doOnMainProfileScreen() {
+    val userAuthModel = userPreferences.userAuthModelFlow().value
+    if (!userAuthModel.isAuth()) {
+      viewState = ProfileScreenState.NotAuthorize("", isAuthProgress = false, isRegProgress = false)
+      return
+    }
+    if (viewStates().value is Success) {
+      return
+    }
+
+    userAuthModel.userName?.let { profileInformationRefresh(it, userAuthModel.token) }
   }
 
   private fun onItemExpandClick(model: SirenFeedUiModel) {
@@ -93,10 +118,82 @@ class ProfileScreenViewModel @Inject constructor(
 
   override fun obtainEvent(viewEvent: ProfileScreenEvent) {
     when (viewEvent) {
-      OnRefresh -> onListRefresh()
-      OnScreenEnter -> onScreenEnter()
+      is OnRefresh -> onUserRefresh()
+      is OnLogout -> onLogoutButtonClick()
+      is OnScreenEnter -> {
+        val type = viewEvent.profileScreenType
+        profileScreenType = type
+        when (type) {
+          is Main -> {
+            doOnMainProfileScreen()
+          }
+          is Other -> {
+            doOnOtherProfileScreen(type.profileName)
+          }
+        }
+      }
       is OnItemExpandClick -> onItemExpandClick(viewEvent.model)
+      is OnAuthorizeButtonClick -> onAuthorizeButtonClick(viewEvent.userName, viewEvent.userPassword)
+      is OnRegistrationButtonClick -> onRegistrationButtonClick(viewEvent.userName, viewEvent.userPassword)
     }
+  }
+
+  private fun onUserRefresh() {
+    when (profileScreenType) {
+      is Main -> {
+        doOnMainProfileScreen()
+      }
+      is Other -> {
+        doOnOtherProfileScreen((profileScreenType as Other).profileName)
+      }
+    }
+  }
+
+  private fun onRegistrationButtonClick(userName: String, userPassword: String) {
+    viewModelScope.launch {
+      userRepository.postRegistrationUserTestFlow(userName, userPassword)
+        .onStart {
+          viewState =
+            ProfileScreenState.NotAuthorize("", isAuthProgress = false, isRegProgress = true)
+        }
+        .catch {
+          viewState =
+            ProfileScreenState.NotAuthorize(registrationErrorString, isAuthProgress = false, isRegProgress = false)
+        }.collectLatest {
+          viewState =
+            ProfileScreenState.NotAuthorize(it?.errorText ?: "", isAuthProgress = false, isRegProgress = false)
+        }
+    }
+  }
+
+  private fun onAuthorizeButtonClick(userName: String, userPassword: String) {
+    viewModelScope.launch {
+      userRepository.postAuthorizeUserTestFlow(userName, userPassword)
+        .onStart {
+          viewState =
+            ProfileScreenState.NotAuthorize("", isAuthProgress = true, isRegProgress = false)
+        }
+        .catch {
+          viewState =
+            ProfileScreenState.NotAuthorize(authErrorString, isAuthProgress = false, isRegProgress = false)
+        }.collectLatest { isSuccess ->
+          if (isSuccess) {
+            doOnMainProfileScreen()
+          } else {
+            viewState =
+              ProfileScreenState.NotAuthorize(authErrorString, isAuthProgress = false, isRegProgress = false)
+          }
+        }
+    }
+  }
+
+  private fun onLogoutButtonClick() {
+    userPreferences.logoutUser()
+    viewState = ProfileScreenState.NotAuthorize(
+      "",
+      isAuthProgress = false,
+      isRegProgress = false
+    )
   }
 
 }

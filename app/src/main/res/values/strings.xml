@@ -5,4 +5,10 @@
   <string name="bottom_bar_siren_screen_title">Siren</string>
   <string name="bottom_bar_profile_screen_title">Profile</string>
   <string name="tool_bar_profile_screen_title">Profile</string>
+  <string name="auth_sign_in_button">Sign in</string>
+  <string name="auth_sign_up_button">Sign up</string>
+  <string name="auth_user_name">Username</string>
+  <string name="auth_user_password">Password</string>
+  <string name="registration_response_error">Registration response field</string>
+  <string name="auth_response_error">Authorization response field</string>
 </resources>

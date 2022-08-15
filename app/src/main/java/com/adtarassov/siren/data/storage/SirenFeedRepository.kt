@@ -17,13 +17,31 @@ class SirenFeedRepository @Inject constructor(
   private val sirenFeedModelsConverter: SirenFeedModelsConverter,
 ) {
 
-  fun getSirenFeedUiModelsFlow(): Flow<List<SirenFeedUiModel>> {
+  fun getSirenRecommendationFeedUiModelsFlow(): Flow<List<SirenFeedUiModel>> {
     return flow {
-      val fooList = sirenApi.getRecommendationFeed().map { model ->
+      val filteredList = sirenApi.getRecommendationFeed().map { model ->
         sirenFeedModelsConverter.convertToFeedModel(model)
       }
-      emit(fooList)
+      emit(filteredList)
     }.flowOn(Dispatchers.IO)
+  }
+
+  fun getSirenProfileFeedUiModelsFlow(profileName: String, token: String?): Flow<List<SirenFeedUiModel>> {
+    return flow {
+      val responseList = if (token.isNullOrBlank()) {
+        sirenApi.getProfileFeed(profileName = profileName)
+      } else {
+        sirenApi.getProfileFeed(token = token, profileName = profileName)
+      }
+      val filteredList = responseList.map { model ->
+        sirenFeedModelsConverter.convertToFeedModel(model)
+      }
+      emit(filteredList)
+    }.flowOn(Dispatchers.IO)
+  }
+
+  fun getSirenProfileFeedUiModelsTestFlow(profileName: String, token: String?): Flow<List<SirenFeedUiModel>> {
+    return getSirenFeedUiModelsFlowTest()
   }
 
   fun getSirenFeedUiModelsFlowTest(): Flow<List<SirenFeedUiModel>> {
@@ -37,7 +55,7 @@ class SirenFeedRepository @Inject constructor(
         SirenFeedModelsConverter.createLongTestFeedModel(),
         SirenFeedModelsConverter.createLongTestFeedModel(),
         SirenFeedModelsConverter.createLongTestFeedModel(),
-        ).map { model ->
+      ).map { model ->
         sirenFeedModelsConverter.convertToFeedModel(model)
       }
       emit(list)
