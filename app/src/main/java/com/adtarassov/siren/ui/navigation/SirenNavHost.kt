@@ -17,7 +17,7 @@ sealed class SirenNavRoute(val route: String) {
 
 @Composable
 fun SirenNavHost(navController: NavHostController) {
-  MainScreen()
+  MainScreen(navController)
 //  NavHost(
 //    navController = navController,
 //    route = ROOT,

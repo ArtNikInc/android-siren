@@ -2,6 +2,7 @@ package com.adtarassov.siren.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 @Composable
 fun FeedItemComponent(
   model: SirenFeedUiModel,
+  onAuthorClick: (SirenFeedUiModel) -> Unit
 ) {
   Card(
     backgroundColor = SirenTheme.colors.bgMain,
@@ -60,7 +62,10 @@ fun FeedItemComponent(
           text = model.authorName,
           style = typography.heading,
           maxLines = 1,
-          overflow = TextOverflow.Ellipsis
+          overflow = TextOverflow.Ellipsis,
+          modifier = Modifier.clickable {
+            onAuthorClick.invoke(model)
+          }
         )
       }
 

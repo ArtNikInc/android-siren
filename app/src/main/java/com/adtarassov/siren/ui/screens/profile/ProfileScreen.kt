@@ -56,6 +56,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 fun ProfileScreen(
   navController: NavHostController,
   viewModel: ProfileScreenViewModel,
+  profileScreenType: ProfileScreenType,
 ) {
   val viewState = viewModel.viewStates().collectAsState()
   val refreshingState by viewModel.isRefreshing().collectAsState()
@@ -91,7 +92,8 @@ fun ProfileScreen(
               refreshState = isRefreshing,
               feeds = state.feedList,
               onExpandClick = { viewModel.obtainEvent(OnItemExpandClick(it)) },
-              onRefresh = { viewModel.obtainEvent(OnRefresh) }
+              onRefresh = { viewModel.obtainEvent(OnRefresh) },
+              onAuthorClick = { /* no-op */ }
             ) {
               ProfileHeader(state.profileModel, viewModel)
             }
@@ -104,7 +106,7 @@ fun ProfileScreen(
     }
   }
   LaunchedEffect(key1 = Unit, block = {
-    viewModel.obtainEvent(OnScreenEnter(ProfileScreenType.Main))
+    viewModel.obtainEvent(OnScreenEnter(profileScreenType))
   })
 }
 

@@ -1,5 +1,6 @@
 package com.adtarassov.siren.ui.screens.feed
 
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -19,7 +20,11 @@ import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Error
 import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Loading
 import com.adtarassov.siren.ui.screens.feed.FeedScreenState.Success
 import com.adtarassov.siren.ui.theme.SirenTheme
+import com.adtarassov.siren.ui.utils.Screens
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenType
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Type.OTHER
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.gson.Gson
 
 @Composable
 @ExperimentalFoundationApi
@@ -50,14 +55,16 @@ fun FeedScreen(
           refreshState = isRefreshing,
           feeds = state.feedList,
           onExpandClick = { viewModel.obtainEvent(OnItemExpandClick(it)) },
-          onRefresh = { viewModel.obtainEvent(OnRefresh) }
+          onRefresh = { viewModel.obtainEvent(OnRefresh) },
+          onAuthorClick = {
+            val profileScreenTypeJsonModel = Uri.encode(Gson().toJson(ProfileScreenType(it.authorName, OTHER)))
+            navController.navigate("${Screens.OTHER_PROFILE_SCREEN}/$profileScreenTypeJsonModel") {
+            }
+          }
         )
-        null -> FeedList(
-          refreshState = isRefreshing,
-          feeds = emptyList(),
-          onExpandClick = { viewModel.obtainEvent(OnItemExpandClick(it)) },
-          onRefresh = { viewModel.obtainEvent(OnRefresh) }
-        )
+        null -> {
+
+        }
       }
     }
   }

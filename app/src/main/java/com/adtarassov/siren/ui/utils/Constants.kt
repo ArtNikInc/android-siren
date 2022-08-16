@@ -8,4 +8,6 @@ object Screens {
   const val FEED_SCREEN = "feed_screen"
   const val SIREN_SCREEN = "siren_screen"
   const val PROFILE_SCREEN = "profile_screen"
+
+  const val OTHER_PROFILE_SCREEN = "other_profile_screen"
 }

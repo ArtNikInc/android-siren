@@ -18,13 +18,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.adtarassov.siren.ui.theme.SirenTheme
 import com.adtarassov.siren.ui.utils.BottomBarScreen
 
+private val screens = listOf(
+  BottomBarScreen.Feed,
+  BottomBarScreen.Settings,
+  BottomBarScreen.Profile,
+)
+
 @Composable
 fun BottomBar(navController: NavHostController) {
-  val screens = listOf(
-    BottomBarScreen.Feed,
-    BottomBarScreen.Settings,
-    BottomBarScreen.Profile,
-  )
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination
 
@@ -70,8 +71,17 @@ fun RowScope.AddItem(
     unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
     onClick = {
       navController.navigate(screen.route) {
-        popUpTo(navController.graph.findStartDestination().id)
+        // Pop up to the start destination of the graph to
+        // avoid building up a large stack of destinations
+        // on the back stack as users select items
+        popUpTo(navController.graph.findStartDestination().id) {
+          saveState = true
+        }
+        // Avoid multiple copies of the same destination when
+        // reselecting the same item
         launchSingleTop = true
+        // Restore state when reselecting a previously selected item
+        restoreState = true
       }
     }
   )

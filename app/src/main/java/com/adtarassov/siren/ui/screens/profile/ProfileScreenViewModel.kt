@@ -19,8 +19,8 @@ import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnRefresh
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnRegistrationButtonClick
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnScreenEnter
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenState.Success
-import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Main
-import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Other
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Type.MAIN
+import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Type.OTHER
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -123,12 +123,13 @@ class ProfileScreenViewModel @Inject constructor(
       is OnScreenEnter -> {
         val type = viewEvent.profileScreenType
         profileScreenType = type
-        when (type) {
-          is Main -> {
+        when (type.screenType) {
+          MAIN -> {
             doOnMainProfileScreen()
           }
-          is Other -> {
-            doOnOtherProfileScreen(type.profileName)
+          OTHER -> {
+            val name = type.profileName ?: return
+            doOnOtherProfileScreen(name)
           }
         }
       }
@@ -139,12 +140,12 @@ class ProfileScreenViewModel @Inject constructor(
   }
 
   private fun onUserRefresh() {
-    when (profileScreenType) {
-      is Main -> {
+    when (profileScreenType.screenType) {
+      MAIN -> {
         doOnMainProfileScreen()
       }
-      is Other -> {
-        doOnOtherProfileScreen((profileScreenType as Other).profileName)
+      OTHER -> {
+        profileScreenType.profileName?.let { doOnOtherProfileScreen(profileName = it) }
       }
     }
   }

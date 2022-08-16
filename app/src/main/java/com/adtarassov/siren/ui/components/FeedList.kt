@@ -25,6 +25,7 @@ fun FeedList(
   feeds: List<SirenFeedUiModel>,
   onRefresh: () -> Unit,
   onExpandClick: (SirenFeedUiModel) -> Unit,
+  onAuthorClick: (SirenFeedUiModel) -> Unit,
   header: (@Composable () -> Unit)? = null,
 ) {
   val hasHeader = header != null
@@ -49,7 +50,7 @@ fun FeedList(
             .animateItemPlacement()
             .padding(start = 16.dp, end = 16.dp, top = if (!hasHeader && isFirst) 16.dp else 0.dp)
         ) {
-          FeedItemComponent(feedModel)
+          FeedItemComponent(feedModel, onAuthorClick)
 //          FeedAnimatedItemComponent(feedModel) {
 //            onExpandClick(it)
 //          }
