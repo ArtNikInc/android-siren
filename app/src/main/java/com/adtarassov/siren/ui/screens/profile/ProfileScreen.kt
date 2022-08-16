@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -87,7 +88,7 @@ fun ProfileScreen(
           LoginScreen(state, viewModel)
         }
         is Success -> {
-          Column {
+          Box {
             FeedList(
               refreshState = isRefreshing,
               feeds = state.feedList,
@@ -100,7 +101,14 @@ fun ProfileScreen(
           }
         }
         null -> {
-
+          Column(Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            CircularProgressIndicator(
+              color = SirenTheme.colors.mainText,
+              strokeWidth = 2.dp
+            )
+          }
         }
       }
     }
