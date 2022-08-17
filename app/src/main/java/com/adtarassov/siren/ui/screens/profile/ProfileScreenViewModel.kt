@@ -1,14 +1,21 @@
 package com.adtarassov.siren.ui.screens.profile
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.adtarassov.siren.R
 import com.adtarassov.siren.data.storage.SirenFeedRepository
 import com.adtarassov.siren.data.storage.SirenProfileRepository
 import com.adtarassov.siren.data.storage.SirenUserRepository
 import com.adtarassov.siren.data.storage.UserPreferences
 import com.adtarassov.siren.ui.BaseFlowViewModel
+import com.adtarassov.siren.ui.MainActivity
 import com.adtarassov.siren.ui.models.SirenFeedUiModel
 import com.adtarassov.siren.ui.models.TopBarUiModel
 import com.adtarassov.siren.ui.models.ProfileUiModel
@@ -21,6 +28,10 @@ import com.adtarassov.siren.ui.screens.profile.ProfileScreenEvent.OnScreenEnter
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenState.Success
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Type.MAIN
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Type.OTHER
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +43,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class ProfileScreenViewModel @Inject constructor(
+class ProfileScreenViewModel @AssistedInject constructor(
+  @Assisted
+  private val profileScreenType: ProfileScreenType,
   private val profileRepository: SirenProfileRepository,
   private val feedRepository: SirenFeedRepository,
   private val userPreferences: UserPreferences,
@@ -45,15 +57,13 @@ class ProfileScreenViewModel @Inject constructor(
   private val registrationErrorString = context.getString(R.string.registration_response_error)
   private val authErrorString = context.getString(R.string.auth_response_error)
 
-  private lateinit var profileScreenType: ProfileScreenType // must be create in OnScreenEnter event
-
   private val isRefreshingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
   fun isRefreshing(): StateFlow<Boolean> = isRefreshingFlow
 
   private val topBarFlow: MutableStateFlow<TopBarUiModel> = MutableStateFlow(
     TopBarUiModel(
       title = context.getString(R.string.tool_bar_profile_screen_title),
-      hasElevation = false
+      hasElevation = true
     )
   )
 
@@ -86,7 +96,10 @@ class ProfileScreenViewModel @Inject constructor(
 
   private fun doOnOtherProfileScreen(profileName: String) {
     val userAuthModel = userPreferences.userAuthModelFlow().value
-    profileInformationRefresh(profileName, userAuthModel.token)
+    viewModelScope.launch {
+      topBarFlow.emit(topBarFlow.value.copy(title = profileName))
+      profileInformationRefresh(profileName, userAuthModel.token)
+    }
   }
 
   private fun doOnMainProfileScreen() {
@@ -99,7 +112,9 @@ class ProfileScreenViewModel @Inject constructor(
       return
     }
 
-    userAuthModel.userName?.let { profileInformationRefresh(it, userAuthModel.token) }
+    userAuthModel.userName?.let {
+      doOnOtherProfileScreen(it)
+    }
   }
 
   private fun onItemExpandClick(model: SirenFeedUiModel) {
@@ -122,7 +137,6 @@ class ProfileScreenViewModel @Inject constructor(
       is OnLogout -> onLogoutButtonClick()
       is OnScreenEnter -> {
         val type = viewEvent.profileScreenType
-        profileScreenType = type
         when (type.screenType) {
           MAIN -> {
             doOnMainProfileScreen()
@@ -197,4 +211,31 @@ class ProfileScreenViewModel @Inject constructor(
     )
   }
 
+  @AssistedFactory
+  interface Factory {
+    fun create(profileScreenType: ProfileScreenType): ProfileScreenViewModel
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  companion object {
+    fun provideFactory(
+      assistedFactory: Factory,
+      profileScreenType: ProfileScreenType
+    ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+      override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return assistedFactory.create(profileScreenType) as T
+      }
+    }
+  }
+
+}
+
+@Composable
+fun profileViewModel(profileScreenType: ProfileScreenType): ProfileScreenViewModel {
+  val factory = EntryPointAccessors.fromActivity(
+    LocalContext.current as Activity,
+    MainActivity.ViewModelFactoryProvider::class.java
+  ).profileViewModelFactory()
+
+  return viewModel(factory = ProfileScreenViewModel.provideFactory(factory, profileScreenType))
 }

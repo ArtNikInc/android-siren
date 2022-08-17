@@ -18,7 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.adtarassov.siren.ui.theme.SirenTheme
 import com.adtarassov.siren.ui.utils.BottomBarScreen
 
-private val screens = listOf(
+val bottomBarScreens = listOf(
   BottomBarScreen.Feed,
   BottomBarScreen.Settings,
   BottomBarScreen.Profile,
@@ -28,19 +28,15 @@ private val screens = listOf(
 fun BottomBar(navController: NavHostController) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination
-
-  val bottomBarDestination = screens.any { it.route == currentDestination?.route }
-  if (bottomBarDestination) {
-    BottomNavigation(
-      backgroundColor = SirenTheme.colors.bgMain,
-    ) {
-      screens.forEach { screen ->
-        AddItem(
-          screen = screen,
-          currentDestination = currentDestination,
-          navController = navController
-        )
-      }
+  BottomNavigation(
+    backgroundColor = SirenTheme.colors.bgMain,
+  ) {
+    bottomBarScreens.forEach { screen ->
+      AddItem(
+        screen = screen,
+        currentDestination = currentDestination,
+        navController = navController
+      )
     }
   }
 }
@@ -66,7 +62,7 @@ fun RowScope.AddItem(
       )
     },
     selected = currentDestination?.hierarchy?.any {
-      it.route == screen.route
+      it.route?.startsWith(screen.route) == true
     } == true,
     unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
     onClick = {

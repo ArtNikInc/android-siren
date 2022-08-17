@@ -14,6 +14,7 @@ class ProfileScreenType(
 
   companion object {
     const val KEY = "profile_transporting_model"
+    val MAIN = ProfileScreenType(null, Type.MAIN)
 
     object ProfileScreenNavType : NavType<ProfileScreenType>(isNullableAllowed = false) {
       override fun get(bundle: Bundle, key: String): ProfileScreenType? {

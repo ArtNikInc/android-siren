@@ -23,6 +23,7 @@ import com.adtarassov.siren.ui.theme.SirenTheme
 import com.adtarassov.siren.ui.utils.Screens
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenType
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Type.OTHER
+import com.adtarassov.siren.ui.utils.BottomBarScreen
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.gson.Gson
 
@@ -58,7 +59,7 @@ fun FeedScreen(
           onRefresh = { viewModel.obtainEvent(OnRefresh) },
           onAuthorClick = {
             val profileScreenTypeJsonModel = Uri.encode(Gson().toJson(ProfileScreenType(it.authorName, OTHER)))
-            navController.navigate("${Screens.OTHER_PROFILE_SCREEN}/$profileScreenTypeJsonModel") {
+            navController.navigate("${BottomBarScreen.Feed.route}/${Screens.OTHER_PROFILE_SCREEN}/$profileScreenTypeJsonModel") {
             }
           }
         )

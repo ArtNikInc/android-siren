@@ -34,7 +34,9 @@ class SirenProfileRepository @Inject constructor(
   fun getProfileUiModelsFlowTest(profileName: String, token: String?): Flow<ProfileUiModel> {
     return flow {
       delay(100)
-      val profileModel = SirenProfileModelsConverter.createLongTestProfileModel()
+      val profileModel = SirenProfileModelsConverter.createLongTestProfileModel().copy(
+        name = profileName
+      )
       val profileModelUiModel = profileModelsConverter.convertToProfileUiModel(profileModel)
       emit(profileModelUiModel)
     }.flowOn(Dispatchers.IO)

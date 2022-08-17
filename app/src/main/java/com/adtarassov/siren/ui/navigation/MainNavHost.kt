@@ -24,6 +24,7 @@ import com.adtarassov.siren.ui.screens.profile.ProfileScreen
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenType
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenType.Type.MAIN
 import com.adtarassov.siren.ui.screens.profile.ProfileScreenViewModel
+import com.adtarassov.siren.ui.screens.profile.profileViewModel
 import com.adtarassov.siren.ui.utils.Screens.OTHER_PROFILE_SCREEN
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -66,11 +67,8 @@ fun MainNavHost(navController: NavHostController) {
       exitTransition = { ExitTransition.None },
       popEnterTransition = { EnterTransition.None },
       popExitTransition = { ExitTransition.None }
-    ) { backStackEntry ->
-      val parentEntry = remember(backStackEntry) {
-        navController.getBackStackEntry(MAIN_SCREEN)
-      }
-      val viewModel: ProfileScreenViewModel = hiltViewModel(parentEntry)
+    ) {
+      val viewModel: ProfileScreenViewModel = profileViewModel(ProfileScreenType.MAIN)
       ProfileScreen(
         navController = navController,
         viewModel = viewModel,
@@ -78,7 +76,7 @@ fun MainNavHost(navController: NavHostController) {
       )
     }
     composable(
-      route = "$OTHER_PROFILE_SCREEN/{${ProfileScreenType.KEY}}",
+      route = "${BottomBarScreen.Feed.route}/$OTHER_PROFILE_SCREEN/{${ProfileScreenType.KEY}}",
       arguments = listOf(
         navArgument(ProfileScreenType.KEY) {
           type = ProfileScreenType.Companion.ProfileScreenNavType
@@ -89,10 +87,20 @@ fun MainNavHost(navController: NavHostController) {
       popEnterTransition = { EnterTransition.None },
       popExitTransition = { ExitTransition.None }
     ) { backStackEntry ->
-      val viewModel: ProfileScreenViewModel = hiltViewModel()
       backStackEntry.arguments?.getParcelable<ProfileScreenType>(ProfileScreenType.KEY)?.let {
+        val viewModel: ProfileScreenViewModel = profileViewModel(it) // create new view model for new instance of screen
         ProfileScreen(navController = navController, viewModel = viewModel, profileScreenType = it)
       }
     }
   }
 }
+
+//@Composable
+//fun noteDetailViewModel(noteId: String): NoteDetailViewModel {
+//  val factory = EntryPointAccessors.fromActivity(
+//    LocalContext.current as Activity,
+//    MainActivity.ViewModelFactoryProvider::class.java
+//  ).noteDetailViewModelFactory()
+//
+//  return viewModel(factory = NoteDetailViewModel.provideFactory(factory, noteId))
+//}

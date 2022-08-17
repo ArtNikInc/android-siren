@@ -66,20 +66,14 @@ fun ProfileScreen(
 
   Scaffold(
     topBar = {
-      Column {
-        TopBar(navController = navController, topBarModel = topBarModel)
-        if (!topBarModel.hasElevation) {
-          Spacer(
-            modifier = Modifier
-              .height(1.dp)
-              .background(SirenTheme.colors.bgMinor)
-          )
-        }
-      }
+      TopBar(navController = navController, topBarModel = topBarModel)
     },
     backgroundColor = SirenTheme.colors.bgMinor
   ) { innerPadding ->
-    Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())) {
+    Box(
+      modifier = Modifier
+        .padding(bottom = innerPadding.calculateBottomPadding())
+    ) {
       when (val state = viewState.value) {
         LoadingError -> {
 
@@ -88,17 +82,16 @@ fun ProfileScreen(
           LoginScreen(state, viewModel)
         }
         is Success -> {
-          Box {
-            FeedList(
-              refreshState = isRefreshing,
-              feeds = state.feedList,
-              onExpandClick = { viewModel.obtainEvent(OnItemExpandClick(it)) },
-              onRefresh = { viewModel.obtainEvent(OnRefresh) },
-              onAuthorClick = { /* no-op */ }
-            ) {
-              ProfileHeader(state.profileModel, viewModel)
-            }
+          FeedList(
+            refreshState = isRefreshing,
+            feeds = state.feedList,
+            onExpandClick = { viewModel.obtainEvent(OnItemExpandClick(it)) },
+            onRefresh = { viewModel.obtainEvent(OnRefresh) },
+            onAuthorClick = { /* no-op */ }
+          ) {
+            ProfileHeader(state.profileModel, viewModel)
           }
+
         }
         null -> {
           Column(Modifier.fillMaxSize(),
