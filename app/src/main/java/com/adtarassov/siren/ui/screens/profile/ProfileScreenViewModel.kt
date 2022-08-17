@@ -32,8 +32,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -41,7 +41,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class ProfileScreenViewModel @AssistedInject constructor(
   @Assisted
@@ -86,6 +85,7 @@ class ProfileScreenViewModel @AssistedInject constructor(
           Log.e(this@ProfileScreenViewModel::class.simpleName, exception.stackTrace.toString())
         }
         .collectLatest { pair ->
+          delay(10000)
           val profileUiModel = pair.first
           val feedList = pair.second
           viewState = Success(profileUiModel, feedList)
@@ -94,7 +94,10 @@ class ProfileScreenViewModel @AssistedInject constructor(
     }
   }
 
-  private fun doOnOtherProfileScreen(profileName: String) {
+  private fun doOnOtherProfileScreen(profileName: String, userRefresh: Boolean) {
+    if (viewStates().value is Success && !userRefresh) {
+      return
+    }
     val userAuthModel = userPreferences.userAuthModelFlow().value
     viewModelScope.launch {
       topBarFlow.emit(topBarFlow.value.copy(title = profileName))
@@ -102,18 +105,15 @@ class ProfileScreenViewModel @AssistedInject constructor(
     }
   }
 
-  private fun doOnMainProfileScreen() {
+  private fun doOnMainProfileScreen(userRefresh: Boolean) {
     val userAuthModel = userPreferences.userAuthModelFlow().value
     if (!userAuthModel.isAuth()) {
       viewState = ProfileScreenState.NotAuthorize("", isAuthProgress = false, isRegProgress = false)
       return
     }
-    if (viewStates().value is Success) {
-      return
-    }
 
     userAuthModel.userName?.let {
-      doOnOtherProfileScreen(it)
+      doOnOtherProfileScreen(it, userRefresh)
     }
   }
 
@@ -139,11 +139,11 @@ class ProfileScreenViewModel @AssistedInject constructor(
         val type = viewEvent.profileScreenType
         when (type.screenType) {
           MAIN -> {
-            doOnMainProfileScreen()
+            doOnMainProfileScreen(userRefresh = false)
           }
           OTHER -> {
             val name = type.profileName ?: return
-            doOnOtherProfileScreen(name)
+            doOnOtherProfileScreen(name, userRefresh = false)
           }
         }
       }
@@ -156,10 +156,10 @@ class ProfileScreenViewModel @AssistedInject constructor(
   private fun onUserRefresh() {
     when (profileScreenType.screenType) {
       MAIN -> {
-        doOnMainProfileScreen()
+        doOnMainProfileScreen(userRefresh = true)
       }
       OTHER -> {
-        profileScreenType.profileName?.let { doOnOtherProfileScreen(profileName = it) }
+        profileScreenType.profileName?.let { doOnOtherProfileScreen(profileName = it, userRefresh = true) }
       }
     }
   }
@@ -193,7 +193,7 @@ class ProfileScreenViewModel @AssistedInject constructor(
             ProfileScreenState.NotAuthorize(authErrorString, isAuthProgress = false, isRegProgress = false)
         }.collectLatest { isSuccess ->
           if (isSuccess) {
-            doOnMainProfileScreen()
+            doOnMainProfileScreen(userRefresh = false)
           } else {
             viewState =
               ProfileScreenState.NotAuthorize(authErrorString, isAuthProgress = false, isRegProgress = false)

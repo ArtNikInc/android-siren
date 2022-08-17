@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.adtarassov.siren.ui.components.FeedList
+import com.adtarassov.siren.ui.components.FeedShimmeringList
 import com.adtarassov.siren.ui.components.TopBar
 import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnItemExpandClick
 import com.adtarassov.siren.ui.screens.feed.FeedScreenEvent.OnRefresh
@@ -50,7 +51,7 @@ fun FeedScreen(
 
         }
         is Loading -> {
-
+          FeedShimmeringList()
         }
         is Success -> FeedList(
           refreshState = isRefreshing,
@@ -64,7 +65,7 @@ fun FeedScreen(
           }
         )
         null -> {
-
+          FeedShimmeringList()
         }
       }
     }

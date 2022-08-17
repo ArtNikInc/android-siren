@@ -27,3 +27,9 @@ val baseDarkPalette = SirenColors(
   bgControlMinor = Color(0xFFF3F4F5),
   errorColor = Color(0xFFFF3377)
 )
+
+val shimmerColorShades = listOf(
+  Color.LightGray.copy(0.9f),
+  Color.LightGray.copy(0.2f),
+  Color.LightGray.copy(0.9f)
+)

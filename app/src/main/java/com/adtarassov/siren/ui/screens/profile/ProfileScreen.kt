@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -39,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.adtarassov.siren.R.string
 import com.adtarassov.siren.ui.components.FeedList
+import com.adtarassov.siren.ui.components.FeedShimmeringList
+import com.adtarassov.siren.ui.components.ShimmerFeedPlaceHolderAnimation
 import com.adtarassov.siren.ui.components.SirenLoadingButton
 import com.adtarassov.siren.ui.components.TopBar
 import com.adtarassov.siren.ui.models.ProfileUiModel
@@ -94,14 +95,7 @@ fun ProfileScreen(
 
         }
         null -> {
-          Column(Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            CircularProgressIndicator(
-              color = SirenTheme.colors.mainText,
-              strokeWidth = 2.dp
-            )
-          }
+          FeedShimmeringList()
         }
       }
     }
